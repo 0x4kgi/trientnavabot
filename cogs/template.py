@@ -16,3 +16,12 @@ class Template(commands.Cog):
     )
     async def hello(self, ctx: commands.Context):
         await ctx.send('hey! :wave:')
+
+    @discord.slash_command(
+        # same attribs also
+    )
+    async def hello(self, ctx: discord.ApplicationContext):
+        await ctx.respond('yo!!')
+
+def setup(bot):
+    bot.add_cog(Template(bot))
