@@ -9,7 +9,9 @@ class Osu(commands.Cog):
         self.bot: commands.Bot = bot
         
         
-    async def send_profile_card_embed(self, ctx: commands.Context, username: str, mode: str):
+    async def send_profile_card_embed(
+            self, ctx: commands.Context, username: str, 
+            mode: str, mini: bool=False):
         await ctx.trigger_typing()
         
         player = user_fetch(username, mode)
@@ -19,7 +21,8 @@ class Osu(commands.Cog):
             await ctx.send(f'Player {username} not found')
             return
         
-        player_embed = osu_profile_card_embed(player=player, player_best=player_best, mode=mode)
+        player_embed = osu_profile_card_embed(
+            player=player, player_best=player_best, mode=mode, mini_embed=mini)
         await ctx.send(embed=player_embed)
     
     
@@ -47,7 +50,7 @@ class Osu(commands.Cog):
     async def osuall(self, ctx: commands.Context, username: str):
         # TODO: remake embed for this one
         for mode in ['osu', 'taiko', 'fruits', 'mania']:
-            await self.send_profile_card_embed(ctx, username, mode)
+            await self.send_profile_card_embed(ctx, username, mode, True)
     
 
 def setup(bot):

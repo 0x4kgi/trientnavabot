@@ -2,7 +2,7 @@ from typing import Literal
 import discord
 from ossapi import Ossapi, Score, User
 
-def osu_profile_card_embed(player: User, player_best: list[Score], mode: str) -> discord.Embed:
+def osu_profile_card_embed(player: User, player_best: list[Score], mode: str, mini_embed: bool=False) -> discord.Embed:
     pp = player.statistics.pp or -1
     
     global_rank = player.statistics.global_rank or -1
@@ -43,8 +43,9 @@ def osu_profile_card_embed(player: User, player_best: list[Score], mode: str) ->
         icon_url=f'https://osu.ppy.sh/images/flags/{player.country.code}.png',
     )
     
-    embed.set_thumbnail(url=player.avatar_url)
-    embed.set_image(url=player.cover_url)
+    if not mini_embed:
+        embed.set_thumbnail(url=player.avatar_url)
+        embed.set_image(url=player.cover_url)
     
     return embed
 
