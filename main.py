@@ -13,7 +13,7 @@ bot = commands.Bot(
 
 cog_list = [
         'basic',
-        'cogger',
+        'osu',
     ]
 
 for cog in cog_list:
