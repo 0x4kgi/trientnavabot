@@ -14,9 +14,9 @@ bot = commands.Bot(
 )
 
 cog_list = [
-        'basic',
-        'osu',
-    ]
+    'basic',
+    'osu',
+]
 
 for cog in cog_list:
     print(f'Loading cog: {cog}')
@@ -28,17 +28,31 @@ async def on_ready():
     print(f'{bot.user} is online!')
 
 
-@bot.command()
+@bot.command(
+    aliases=['rcog'],
+    hidden=True,
+)
 @commands.is_owner()
-async def reload(ctx: commands.Context, cog: str):
+async def reloadcog(ctx: commands.Context, cog: str):
     try:
         bot.reload_extension(f'cogs.{cog}')
+        await ctx.send(f':white_check_mark: Reloaded {cog}')
+    except Exception as e:
+        await ctx.send(f':x: Failed to reload {cog} ({e})')
+
+
+@bot.command(
+    aliases=['lcog'],
+    hidden=True,
+)
+@commands.is_owner()
+async def loadcog(ctx: commands.Context, cog: str):
+    try:
+        bot.load_extension(f'cogs.{cog}')
         await ctx.send(f':white_check_mark: Loaded {cog}')
     except Exception as e:
         await ctx.send(f':x: Failed to load {cog} ({e})')
 
 
 if __name__ == '__main__':
-    
-
     bot.run(os.getenv("TOKEN"))
