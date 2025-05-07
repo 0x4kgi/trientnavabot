@@ -3,33 +3,14 @@ import discord
 from ossapi import Ossapi, Score, User
 
 def osu_profile_card_embed(player: User, player_best: list[Score], mode: str, mini_embed: bool=False) -> discord.Embed:
-    pp = player.statistics.pp or -1
     
     global_rank = player.statistics.global_rank or -1
     country_rank = player.statistics.country_rank or -1
     country_code = player.country.code
     
-    play_time = player.statistics.play_time / 60 / 60
-    
-    grade_x = player.statistics.grade_counts.ss + player.statistics.grade_counts.ssh
-    grade_s = player.statistics.grade_counts.s + player.statistics.grade_counts.sh
-    grade_a = player.statistics.grade_counts.a
-    
     gamemode = proper_mode(mode)
     
-    best_range = top_play_stats(player_best)
-    top_score = best_range[0]
-    top_100 = best_range[1]
-    best_spread = top_score - top_100
-    
-    description = f"""Performance: {pp:,.2f}pp ({player.statistics.hit_accuracy:,.2f}%)
-    SS / S / A: {grade_x:,} / {grade_s:,} / {grade_a:,}
-    Top 1 / 100: {top_score:,.2f}pp / {top_100:,.2f}pp ({best_spread:,.2f}pp diff)
-    Level: {player.statistics.level.current:,}
-    Play count: {player.statistics.play_count:,} ({play_time:,.2f} hours)
-    Ranked score: {player.statistics.ranked_score:,}
-    Total score: {player.statistics.total_score:,}
-    """
+    description = mode_stat_description(player, player_best)
     
     embed = discord.Embed(
         title=f'{player.username}\'s statistics for {gamemode}',
@@ -48,6 +29,57 @@ def osu_profile_card_embed(player: User, player_best: list[Score], mode: str, mi
         embed.set_image(url=player.cover_url)
     
     return embed
+
+
+def osu_all_profile_embed(
+        player: User, 
+        statistics: dict[str, User | None],
+        top_plays: dict[str, list[Score]],
+    ) -> discord.Embed:
+    
+    embed = discord.Embed(
+        title=f'All mode stats for {player.username}'
+    )
+    embed.set_thumbnail(url=player.avatar_url)
+    embed.set_image(url=player.cover_url)
+    
+    for mode in statistics:
+        description = mode_stat_description(
+            player=statistics[mode],
+            player_best=top_plays[mode],
+        )
+        embed.add_field(
+            name=proper_mode(mode),
+            value=description,
+            inline=False
+        )
+    
+    return embed
+
+
+def mode_stat_description(player: User, player_best: list[Score]) -> str:
+    pp = player.statistics.pp or -1
+    play_time = player.statistics.play_time / 60 / 60
+    
+    best_range = top_play_stats(player_best)
+    top_score = best_range[0]
+    top_100 = best_range[1]
+    best_spread = top_score - top_100
+    
+    grade_x = player.statistics.grade_counts.ss + player.statistics.grade_counts.ssh
+    grade_s = player.statistics.grade_counts.s + player.statistics.grade_counts.sh
+    grade_a = player.statistics.grade_counts.a
+    
+    description = f"""**Performance**: `{pp:,.2f}pp ({player.statistics.hit_accuracy:,.2f}%)`
+    **Ranks**: SS `{grade_x:,}` S `{grade_s:,}` A `{grade_a:,}`
+    **Best scores**: #1 `{top_score:,.2f}pp` #100 `{top_100:,.2f}pp` (`{best_spread:,.2f}pp` diff)
+    **Level**: `{player.statistics.level.current:,}`
+    **Play count**: `{player.statistics.play_count:,} ({play_time:,.2f} hours)`
+    **Ranked score**: `{player.statistics.ranked_score:,}`
+    **Total score**: `{player.statistics.total_score:,}`
+    """
+    
+    return description
 
 
 def top_play_stats(player_best: list[Score]):
