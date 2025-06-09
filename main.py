@@ -16,6 +16,7 @@ bot = commands.Bot(
 cog_list = [
     'basic',
     'osu',
+    'llmchat',
 ]
 
 for cog in cog_list:
