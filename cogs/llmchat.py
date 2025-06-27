@@ -28,7 +28,7 @@ class ThreadChat(commands.Cog):
             content = self._clean_bot_mention(message)
             
             if author_id != self.bot.user.id:
-                content = f'{message.author.name} said: {content}'
+                content = f'{message.author.display_name} ({message.author.name}): {content}'
             
             role = 'assistant' if author_id == self.bot.user.id else 'user'
             
@@ -78,7 +78,7 @@ class ThreadChat(commands.Cog):
             thinking_message = await message.channel.send('*Thinking...*')
             
             # thanks chatgipity
-            thread_messages = [msg async for msg in message.channel.history(limit=25)]
+            thread_messages = [msg async for msg in message.channel.history(limit=50)]
             thread_messages.reverse()
             
             llm_thread_context = self._translate_context_for_llm(thread_messages)
