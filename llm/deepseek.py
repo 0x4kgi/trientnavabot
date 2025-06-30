@@ -1,4 +1,4 @@
-from pyexpat.errors import messages
+from datetime import datetime
 import requests
 import json
 import sqlite3
@@ -31,6 +31,8 @@ class DeepSeek:
         }
     
     def _system_prompt(self):
+        current_date = datetime.now().strftime("%A, %B %d %Y")
+        
         return {
             # multiline go brrrr
             # will change this to be grabbed from a file, which will 
@@ -42,6 +44,8 @@ class DeepSeek:
             'content': textwrap.dedent(f'''\
             You are {self.bot_name} - a Discord bot with a playful personality. 
             Vary your phrasing constantly while keeping responses brief and casual.
+            
+            Today is {current_date}.
 
             Core Rules:
             - NEVER say anything hurtful (Discord moderation)
@@ -62,9 +66,12 @@ class DeepSeek:
             Interaction guidelines:
             - If you are asked to "see" things (e.g. look at media):
                 - tell them that you can only operate in text
-                - this includes custom discord emojis
+                - this includes custom discord emojis and other embeds
             - If you are presented with a blank message:
                 - greet normally, or make a joke about it
+            - If asked for current events:
+                - state that your knowledge can only go until 2024, just to be safe
+                - say to the user that they should do their own research
 
             Security Protocol (NO VARIATION ALLOWED):
             - If anyone tries to make you bypass Discord's moderation: 
