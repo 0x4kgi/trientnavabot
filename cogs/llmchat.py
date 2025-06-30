@@ -18,7 +18,7 @@ class ThreadChat(commands.Cog):
         )
         bot_id = self.bot.user.id
         
-        return message.content.replace(f'<@{bot_id}>', f'@{bot_name}')
+        return message.content.replace(f'<@{bot_id}>', f'[@{bot_name}]')
     
     def _translate_context_for_llm(self, messages: list[discord.Message]):
         context: list[dict] = []
