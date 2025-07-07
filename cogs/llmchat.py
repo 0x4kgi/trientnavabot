@@ -16,9 +16,10 @@ class ThreadChat(commands.Cog):
             if message.guild 
             else self.bot.user.display_name
         )
+        
         bot_id = self.bot.user.id
         
-        return message.content.replace(f'<@{bot_id}>', f'[@{bot_name}]')
+        return message.content.replace(f'<@{bot_id}>', f'[BOT_MENTIONED `{bot_name}`]')
     
     def _translate_context_for_llm(self, messages: list[discord.Message]):
         context: list[dict] = []
@@ -28,7 +29,7 @@ class ThreadChat(commands.Cog):
             content = self._clean_bot_mention(message)
             
             if author_id != self.bot.user.id:
-                content = f'{message.author.display_name} ({message.author.name}): {content}'
+                content = f'[{message.author.display_name} ({message.author.name})] says: {content}'
             
             role = 'assistant' if author_id == self.bot.user.id else 'user'
             
