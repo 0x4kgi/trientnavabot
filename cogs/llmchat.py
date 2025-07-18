@@ -70,6 +70,12 @@ class ThreadChat(commands.Cog):
         if not isinstance(message.channel, discord.Thread):
             return
         
+        # Only reply on threads created by the bot
+        # I don't plan to add a multi-bot in threads, 2 complex 4 me
+        thread_owner = message.channel.owner_id
+        if self.bot.user.id != thread_owner:
+            return
+
         thread_id = message.channel.id
         if thread_id in self.processing_threads:
             return
