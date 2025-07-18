@@ -15,13 +15,13 @@ class DeepSeekChatLogs:
             print(f'Connected to {self.db}')
 
 class DeepSeek:
-    def __init__(self, api: str, model: str='deepseek-chat'):
+    def __init__(self, api: str, model: str='deepseek-chat', system_prompt_path: str = 'default.md') -> None:
         self.api = api
         self.model = model
         self.url = 'https://api.deepseek.com/chat/completions'
         self.headers = self._headers()
         self.bot_name = os.getenv('BOT_NAME') or 'trientnava'
-        self.system_prompt_path = 'default.md'
+        self.system_prompt_path = system_prompt_path or 'default.md'
     
     def _headers(self):
         return {

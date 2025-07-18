@@ -8,9 +8,10 @@ class ThreadChat(commands.Cog):
     def __init__(self, bot):
         self.bot: commands.Bot = bot
         self.llm: DeepSeek = DeepSeek(os.getenv('DEEPSEEK_API'))
+        self.llm_thread_title: DeepSeek = DeepSeek(os.getenv('DEEPSEEK_API'), system_prompt_path='summarize.md')
         self.processing_threads = set()
     
-    def _clean_bot_mention(self, message: discord.Message):
+    def _clean_bot_mention(self, message: discord.Message) -> str:
         bot_name = (
             message.guild.me.display_name 
             if message.guild 
@@ -58,8 +59,8 @@ class ThreadChat(commands.Cog):
                 single_response = self.llm.send_message(clean_message)
                 await thinking_message.edit(single_response)
                 
-                thread_title_llm = self.llm.send_message(
-                    f'Summarize the following in less than 5 (five) words: "{clean_message}"'
+                thread_title_llm = self.llm_thread_title.send_message(
+                    clean_message
                 )
                 await thread.edit(name=thread_title_llm)
             except Exception as e:
